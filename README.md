@@ -70,6 +70,42 @@ Neste exercício, não vamos usar eventos. Os botões `Editar` e `Remover` devem
 
 Não altere a estrutura principal do `index.html` nem escreva as tarefas diretamente nele.
 
+## Parte 2: eventos
+
+Nesta segunda parte, vamos usar eventos para dar vida à lista. Os botões `Editar` e `Remover` e o checkbox de cada item vão passar a responder às ações da pessoa usuária.
+
+### Sua tarefa
+
+1. Ao clicar em **Remover**, a tarefa deve sair da tela e do array.
+2. Ao clicar em **Editar**, a pessoa deve poder alterar o título da tarefa.
+3. Ao marcar ou desmarcar o **checkbox**, a tarefa deve mudar de estado entre concluída e pendente.
+
+### Passo a passo
+
+Siga esta ordem para construir esta parte:
+
+1. Selecione a lista `#lista-tarefas` com `document.querySelector()`.
+2. Adicione um listener de clique na lista com `addEventListener("click", ...)`: assim, todos os botões dentro dela ficam cobertos pelo mesmo código.
+3. Dentro do listener, use `event.target` para saber onde a pessoa clicou e o atributo `data-acao` do botão para descobrir se a ação é `editar` ou `remover`. Se o clique não veio de um botão, ignore.
+4. Suba até o `<li>` mais próximo com `closest(".tarefa")` e leia o `data-id` para descobrir qual tarefa foi acionada.
+5. Se a ação for **remover**, tire o item da tela com `remove()` e o objeto do array (com `splice()` ou `filter()`). Depois, atualize o contador.
+6. Se a ação for **editar**, peça o novo título (por exemplo, com `prompt()`), atualize o `innerText` do `h3` e o objeto no array.
+7. Adicione um listener de mudança na lista, com `addEventListener("change", ...)`, para escutar o checkbox.
+8. Quando o checkbox mudar, use a propriedade `checked` para saber o novo estado, alterne a classe `.tarefa-concluida` com `classList.toggle()` e atualize o objeto no array.
+9. Depois de cada ação, atualize o contador com a nova quantidade de tarefas.
+
+### Requisitos
+
+- Usar `addEventListener()` para escutar os eventos de clique e de mudança.
+- Usar `event.target` para identificar o elemento que disparou o evento.
+- Usar o valor de `data-acao` para decidir se a ação é editar ou remover.
+- Usar o valor de `data-id` para encontrar a tarefa no array.
+- Ao remover, retirar o item da tela com `remove()` e o objeto do array.
+- Ao editar, atualizar o texto na tela e o objeto no array.
+- Ao marcar o checkbox, alternar a classe `.tarefa-concluida` com `classList.toggle()`.
+- Manter o contador sempre atualizado após cada ação.
+- Não recarregar a página: os botões já têm `type="button"` justamente para evitar isso.
+
 ## Desafios extras
 
 - Alterar o texto do título usando JavaScript.
