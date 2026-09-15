@@ -24,9 +24,16 @@ const tarefas = [
 
 // <------- seu código aqui ---->
   const ul = document.querySelector("#lista-tarefas");
+const contadorTarefas = document.querySelector("#total-tarefas") || document.querySelector(".contador");
 
-  const contadorTarefas = document.querySelector("#total-tarefas") || document.querySelector(".contador");
 ul.innerHTML = "";
+
+function atualizarContador() {
+  if (contadorTarefas) {
+    contadorTarefas.textContent = tarefas.length;
+  }
+}
+
 function criarListaDeTarefas(tarefa) {
   const li = document.createElement("li");
   li.classList.add("tarefa");
@@ -66,20 +73,20 @@ function criarListaDeTarefas(tarefa) {
   const divAcoes = document.createElement("div");
   divAcoes.classList.add("acoes-tarefa");
 
-  const button2 = document.createElement("button");
-  button2.classList.add("botao", "botao-editar");
-  button2.setAttribute("type", "button");
-  button2.setAttribute("data-acao", "editar");
-  button2.textContent = "Editar";
+  const buttonEditar = document.createElement("button");
+  buttonEditar.classList.add("botao", "botao-editar");
+  buttonEditar.setAttribute("type", "button");
+  buttonEditar.setAttribute("data-acao", "editar");
+  buttonEditar.textContent = "Editar";
 
-  const button = document.createElement("button");
-  button.classList.add("botao", "botao-remover");
-  button.setAttribute("type", "button");
-  button.setAttribute("data-acao", "remover");
-  button.textContent = "Remover";
+  const buttonRemover = document.createElement("button");
+  buttonRemover.classList.add("botao", "botao-remover");
+  buttonRemover.setAttribute("type", "button");
+  buttonRemover.setAttribute("data-acao", "remover");
+  buttonRemover.textContent = "Remover";
 
-  divAcoes.appendChild(button2);
-  divAcoes.appendChild(button);
+  divAcoes.appendChild(buttonEditar);
+  divAcoes.appendChild(buttonRemover);
   li.appendChild(divAcoes);
 
   ul.appendChild(li);
@@ -89,6 +96,47 @@ for (let tarefa of tarefas) {
   criarListaDeTarefas(tarefa);
 }
 
-if (contadorTarefas) {
-  contadorTarefas.textContent = tarefas.length;
-}
+atualizarContador();
+
+ul.addEventListener("click", function (event) {
+  const botao = event.target.closest("button");
+  if (!botao) return; // Removida a chave { extra
+
+  const acao = botao.getAttribute("data-acao");
+  const li = botao.closest("li");
+  const id = Number(li.getAttribute("data-id"));
+  const indice = tarefas.findIndex((tarefa) => tarefa.id === id);
+  if (indice === -1) return;
+
+  if (acao === "remover") {
+    tarefas.splice(indice, 1);
+    li.remove();
+    atualizarContador();
+  }
+
+  if (acao === "editar") {
+    const novoTitulo = prompt("Editar título:", tarefas[indice].titulo);
+    if (novoTitulo === null) return;
+    if (novoTitulo.trim() === "") return;
+
+    const titulo = novoTitulo.trim();
+    tarefas[indice].titulo = titulo;
+    li.querySelector(".tarefa-titulo").textContent = titulo;
+  
+    li.querySelector(".tarefa-checkbox").setAttribute("aria-label", `Concluir: ${titulo}`);
+  }
+});
+
+ul.addEventListener("change", function (event) {
+  const checkbox = event.target;
+  if (!checkbox.classList.contains("tarefa-checkbox")) return;
+  
+  const li = checkbox.closest("li");
+  const id = Number(li.getAttribute("data-id"));
+  const tarefa = tarefas.find((item) => item.id === id);
+  if (!tarefa) return;
+
+  tarefa.concluida = checkbox.checked;
+  li.classList.toggle("tarefa-concluida", tarefa.concluida);
+  li.setAttribute("data-status", tarefa.concluida ? "concluida" : "pendente");
+});
